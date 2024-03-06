@@ -1,6 +1,3 @@
-// вставьте сюда ваш код для класса ArrayPtr
-// внесите в него изменения, 
-// которые позволят реализовать move-семантику
 #pragma once
 #include <cstdlib>
 #include <algorithm>
@@ -29,9 +26,7 @@ public:
 
     // Move-конструктор
     explicit ArrayPtr(ArrayPtr&& ptr) noexcept {
-        if (raw_ptr_ != ptr.Get()) {
-            raw_ptr_ = ptr.Release();
-        }
+        raw_ptr_ = ptr.Release();
     }
 
     // Запрещаем копирование
@@ -44,6 +39,7 @@ public:
 
     // Запрещаем присваивание
     ArrayPtr& operator=(const ArrayPtr&) = delete;
+   
 
     // Прекращает владением массивом в памяти, возвращает значение адреса массива
     // После вызова метода указатель на массив должен обнулиться
@@ -65,12 +61,7 @@ public:
 
     // Возвращает true, если указатель ненулевой, и false в противном случае
     explicit operator bool() const {
-        if (raw_ptr_ == nullptr) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return raw_ptr_ != nullptr;
     }
 
     // Возвращает значение сырого указателя, хранящего адрес начала массива
@@ -80,14 +71,9 @@ public:
 
     // Обменивается значениям указателя на массив с объектом other
     void swap(ArrayPtr& other) noexcept {
-        Type* temp_ptr = raw_ptr_;
-        raw_ptr_ = other.raw_ptr_;
-        other.raw_ptr_ = temp_ptr;
+        std::swap(other.raw_ptr_, raw_ptr_);
     }
     
-    Type* Get_begin() const noexcept {
-		return &raw_ptr_[0];
-	}
 
 private:
     Type* raw_ptr_ = nullptr;
