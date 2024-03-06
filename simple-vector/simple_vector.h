@@ -1,5 +1,3 @@
-// вставьте сюда ваш код для класса SimpleVector
-// внесите необходимые изменения для поддержки move-семантики
 #pragma once
 #include "array_ptr.h"
 #include <cassert>
@@ -67,14 +65,11 @@ public:
         this->swap(tmp);
     }
 
-    SimpleVector& operator=(const SimpleVector& rhs)
-    {
-	    if(&rhs != this)
-	    {
+    SimpleVector& operator=(const SimpleVector& rhs){
+        if (&rhs != this){
             auto rhs_copy = rhs;
             swap(rhs_copy);
 	    }
-
         return *this;
     }
 
@@ -113,11 +108,13 @@ public:
 
     // Возвращает ссылку на элемент с индексом index
     Type& operator[](size_t index) noexcept {
+        assert(index < size_);
         return items_[index];
     }
 
     // Возвращает константную ссылку на элемент с индексом index
     const Type& operator[](size_t index) const noexcept {
+        assert(index < size_);
         return items_[index];
     }
 
@@ -166,8 +163,8 @@ public:
             auto vector_size = std::max(new_size, capacity_ * 2);
             ArrayPtr<Type> new_vector(vector_size);
             //SimpleVector new_vector(vector_size);
-            Fill(new_vector.Get_begin(), new_vector.Get_begin() + vector_size);
-            std::move(begin(), end(), new_vector.Get_begin());
+            Fill(new_vector.Get(), new_vector.Get() + vector_size);
+            std::move(begin(), end(), new_vector.Get());
             items_.swap(new_vector);
             size_ = new_size;
             capacity_ = vector_size;
@@ -232,6 +229,7 @@ public:
     // Если перед вставкой значения вектор был заполнен полностью,
     // вместимость вектора должна увеличиться вдвое, а для вектора вместимостью 0 стать равной 1
     Iterator Insert(ConstIterator pos, const Type& value) {
+        assert(pos >= cbegin() && pos <= cend());
         auto distance = pos - cbegin();
         auto old_size = size_;
         Resize(size_ + 1);
@@ -242,6 +240,7 @@ public:
     }
 
     Iterator Insert(ConstIterator pos, Type&& value) {
+        assert(pos >= cbegin() && pos <= cend());
         auto distance = pos - cbegin();
         auto old_size = size_;
         Resize(size_ + 1);
@@ -260,6 +259,7 @@ public:
 
     // Удаляет элемент вектора в указанной позиции
     Iterator Erase(ConstIterator pos) {
+        assert(pos >= cbegin() && pos <= cend());
         auto distance = pos - cbegin();
         Iterator pos_ = items_.Get() + distance;
         std::move(pos_ + 1, end(), pos_);
