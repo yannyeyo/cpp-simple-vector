@@ -40,6 +40,12 @@ public:
     // Запрещаем присваивание
     ArrayPtr& operator=(const ArrayPtr&) = delete;
    
+    ArrayPtr& operator=(ArrayPtr<Type>&& moved){
+        if (&moved != this){
+            std::swap(raw_ptr_,*this);
+        }
+        return *this;
+    }
 
     // Прекращает владением массивом в памяти, возвращает значение адреса массива
     // После вызова метода указатель на массив должен обнулиться
