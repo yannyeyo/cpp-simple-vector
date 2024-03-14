@@ -44,7 +44,7 @@ public:
     ArrayPtr& operator=(ArrayPtr&& other) {
         if (this != &other) {
             ArrayPtr<Type> temp(other.Get());
-            swap(temp);
+            swap(other);
         }
         return *this;
     }
